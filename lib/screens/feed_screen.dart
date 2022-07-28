@@ -1,6 +1,8 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get_it/get_it.dart';
+import 'package:stacked/stacked.dart';
 import 'package:tafi/data/video.dart';
 import 'package:tafi/screens/feed_viewmodel.dart';
 import 'package:tafi/screens/messages_screen.dart';
@@ -9,8 +11,6 @@ import 'package:tafi/screens/search_screen.dart';
 import 'package:tafi/widgets/actions_toolbar.dart';
 import 'package:tafi/widgets/bottom_bar.dart';
 import 'package:tafi/widgets/video_description.dart';
-import 'package:get_it/get_it.dart';
-import 'package:stacked/stacked.dart';
 import 'package:video_player/video_player.dart';
 
 class FeedScreen extends StatefulWidget {
@@ -466,28 +466,32 @@ class _FeedScreenState extends State<FeedScreen> {
         SafeArea(
           child: Container(
             padding: EdgeInsets.only(top: 20),
-            child: TabBar(
-              tabs: [ Tab(
-                child: Text(
-                  'Trending',
-                  style: TextStyle(
-                    color: Colors.black87,
-                    fontSize: 18,
-                  ),
-                ),
-              ),
-                Tab(
-                  child: Text(
-                    'For You',
-                    style: TextStyle(
-                      color: Colors.black87,
-                      fontSize: 18,
+              child: DefaultTabController(animationDuration: Duration(seconds: 2),
+                length: 2,
+                child: TabBar(indicatorColor: Colors.transparent ,
+                  tabs: [
+                    Tab(
+                      child: Text(
+                        'Trending',
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
+                    Tab(
+                      child: Text(
+                      'For You',
+                      style: TextStyle(
+                        color: Colors.red,
+                        fontSize: 18,
+                      ),
                     ),
                   ),
-                ),],
+                ],
 
-            ),
-          ),
+              ),
+              )),
         ),
       ],
     );

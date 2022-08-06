@@ -2,28 +2,24 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get_it/get_it.dart';
-import 'package:stacked/stacked.dart';
-import 'package:tafi/data/video.dart';
 import 'package:tafi/screens/feed_viewmodel.dart';
-import 'package:tafi/screens/home_screen/home_screen.dart';
-import 'package:tafi/screens/message/messages_screen.dart';
-import 'package:tafi/screens/profile/profile_screen.dart';
-import 'package:tafi/screens/search/search_screen.dart';
 import 'package:tafi/widgets/actions_toolbar.dart';
-import 'package:tafi/widgets/bottom_bar.dart';
 import 'package:tafi/widgets/video_description.dart';
 import 'package:video_player/video_player.dart';
 
-class FeedScreen extends StatefulWidget {
-  FeedScreen({Key? key}) : super(key: key);
+import '../../data/video.dart';
+
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  _FeedScreenState createState() => _FeedScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _FeedScreenState extends State<FeedScreen> {
+class _HomeScreenState extends State<HomeScreen> {
   final locator = GetIt.instance;
   final feedViewModel = GetIt.instance<FeedViewModel>();
+
   @override
   void initState() {
     feedViewModel.loadVideo(0);
@@ -34,38 +30,172 @@ class _FeedScreenState extends State<FeedScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder<FeedViewModel>.reactive(
-        disposeViewModel: false,
-        builder: (context, model, child) => videoScreen(),
-        viewModelBuilder: () => feedViewModel);
+    return SafeArea(
+      child: Scaffold(
+          body: DefaultTabController(
+        length: 2,
+        child: Column(children: [
+          Container(
+            height: 50,
+            child: TabBar(tabs: [
+              Tab(
+                child: Text(
+                  'New',
+                  style: TextStyle(color: Colors.black87, fontSize: 18),
+                ),
+              ),
+              Tab(
+                child: Text(
+                  'Trending',
+                  style: TextStyle(
+                    color: Colors.black87,
+                    fontSize: 18,
+                  ),
+                ),
+              ),
+            ]),
+          ),
+          Expanded(
+            child: TabBarView(
+              children: [
+                videoScreen(),
+                Container(
+                  color: Colors.green,
+                )
+              ],
+            ),
+          ),
+        ]),
+      )),
+    );
   }
 
   Widget videoScreen() {
     return Scaffold(
-      backgroundColor: GetIt.instance<FeedViewModel>().actualScreen == 0
-          ? Colors.black
-          : Colors.white,
-      body: Stack(
-        children: [
-          PageView.builder(
-            itemCount: 2,
-            // onPageChanged: (value) {
-            //   print(value);
-            //   if (value == 1)
-            //     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
-            //   else
-            //     SystemChrome.setSystemUIOverlayStyle(
-            //         SystemUiOverlayStyle.light);
-            // },
-            itemBuilder: (context, index) {
-              if (index == 0)
-                return scrollFeed();
-              else
-                return profileView();
-            },
-          ),
-        ],
+      // backgroundColor: GetIt.instance<FeedViewModel>().actualScreen == 0
+      //     ? Colors.black
+      //     : Colors.white,
+      body: PageView.builder(
+        itemCount: 2,
+        onPageChanged: (value) {
+          print(value);
+          if (value == 1)
+            SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
+          else
+            SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
+        },
+        itemBuilder: (context, index) {
+          if (index == 0)
+            return profileView();
+          else
+            return Container();
+        },
       ),
+    );
+  }
+
+  Widget feedVideos() {
+    return Stack(
+      children: [
+        PageView.builder(
+          controller: PageController(
+            initialPage: 0,
+            viewportFraction: 1,
+          ),
+          itemCount: feedViewModel.videoSource?.listVideos.length,
+          onPageChanged: (index) {
+            index = index % (feedViewModel.videoSource!.listVideos.length);
+            feedViewModel.changeVideo(index);
+          },
+          scrollDirection: Axis.vertical,
+          itemBuilder: (context, index) {
+            index = index % (feedViewModel.videoSource!.listVideos.length);
+            return videoCard(feedViewModel.videoSource!.listVideos[index]);
+          },
+        ),
+        SafeArea(
+          child: Container(
+              padding: EdgeInsets.only(top: 20),
+              child: DefaultTabController(
+                animationDuration: Duration(seconds: 2),
+                length: 2,
+                child: TabBar(
+                  indicatorColor: Colors.red,
+                  indicatorSize: TabBarIndicatorSize.label,
+                  tabs: [
+                    Tab(
+                      child: Text(
+                        'Trending',
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
+                    Tab(
+                      child: Text(
+                        'For You',
+                        style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 18,
+                        ),
+                      ),
+                    ),
+                    TabBarView(
+                      children: [Container(), Container()],
+                    )
+                  ],
+                ),
+              )),
+        ),
+      ],
+    );
+  }
+
+  Widget videoCard(Video video) {
+    return Stack(
+      children: [
+        video.controller != null
+            ? GestureDetector(
+                onTap: () {
+                  if (video.controller!.value.isPlaying) {
+                    video.controller?.pause();
+                  } else {
+                    video.controller?.play();
+                  }
+                },
+                child: SizedBox.expand(
+                    child: FittedBox(
+                  fit: BoxFit.cover,
+                  child: SizedBox(
+                    width: video.controller?.value.size.width ?? 0,
+                    height: video.controller?.value.size.height ?? 0,
+                    child: VideoPlayer(video.controller!),
+                  ),
+                )),
+              )
+            : Container(
+                color: Colors.black,
+                child: Center(
+                  child: Text("Loading"),
+                ),
+              ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                VideoDescription(video.user, video.videoTitle, video.songName),
+                ActionsToolbar(video.likes, video.comments,
+                    "https://www.andersonsobelcosmetic.com/wp-content/uploads/2018/09/chin-implant-vs-fillers-best-for-improving-profile-bellevue-washington-chin-surgery.jpg"),
+              ],
+            ),
+            SizedBox(height: 20)
+          ],
+        ),
+      ],
     );
   }
 
@@ -433,137 +563,5 @@ class _FeedScreenState extends State<FeedScreen> {
                 ),
               ]))),
     );
-  }
-
-  Widget scrollFeed() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        Expanded(child: currentScreen()),
-      BottomBar(),
-
-
-      ],
-    );
-  }
-
-  Widget feedVideos() {
-    return Stack(
-      children: [
-        PageView.builder(
-          controller: PageController(
-            initialPage: 0,
-            viewportFraction: 1,
-          ),
-          itemCount: feedViewModel.videoSource?.listVideos.length,
-          onPageChanged: (index) {
-            index = index % (feedViewModel.videoSource!.listVideos.length);
-            feedViewModel.changeVideo(index);
-          },
-          scrollDirection: Axis.vertical,
-          itemBuilder: (context, index) {
-            index = index % (feedViewModel.videoSource!.listVideos.length);
-            return videoCard(feedViewModel.videoSource!.listVideos[index]);
-          },
-        ),
-        SafeArea(
-          child: Container(
-            padding: EdgeInsets.only(top: 20),
-            child: DefaultTabController(
-              length: 2,
-              child: TabBar(
-                tabs: [
-                  Tab(
-                    child: Text(
-                      'Following',
-                      style: TextStyle(color: Colors.white, fontSize: 18),
-                    ),
-                  ),
-                  Tab(
-                    child: Text(
-                      'For You',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                ],
-                indicatorColor: Colors.red,
-                indicatorSize: TabBarIndicatorSize.label,
-              ),
-            ),
-          ),
-        )
-      ],
-    );
-  }
-
-  Widget currentScreen() {
-    switch (feedViewModel.actualScreen) {
-      case 0:
-        return feedVideos();
-      case 1:
-        return SearchScreen();
-      case 2:
-        return MessagesScreen();
-      case 3:
-        return ProfileScreen();
-      default:
-        return feedVideos();
-    }
-  }
-
-  Widget videoCard(Video video) {
-    return Stack(
-      children: [
-        video.controller != null
-            ? GestureDetector(
-                onTap: () {
-                  if (video.controller!.value.isPlaying) {
-                    video.controller?.pause();
-                  } else {
-                    video.controller?.play();
-                  }
-                },
-                child: SizedBox.expand(
-                    child: FittedBox(
-                  fit: BoxFit.cover,
-                  child: SizedBox(
-                    width: video.controller?.value.size.width ?? 0,
-                    height: video.controller?.value.size.height ?? 0,
-                    child: VideoPlayer(video.controller!),
-                  ),
-                )),
-              )
-            : Container(
-                color: Colors.black,
-                child: Center(
-                  child: Text("Loading"),
-                ),
-              ),
-        Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            Row(
-              mainAxisSize: MainAxisSize.max,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: <Widget>[
-                VideoDescription(video.user, video.videoTitle, video.songName),
-                ActionsToolbar(video.likes, video.comments,
-                    "https://www.andersonsobelcosmetic.com/wp-content/uploads/2018/09/chin-implant-vs-fillers-best-for-improving-profile-bellevue-washington-chin-surgery.jpg"),
-              ],
-            ),
-            SizedBox(height: 20)
-          ],
-        ),
-      ],
-    );
-  }
-
-  @override
-  void dispose() {
-    feedViewModel.controller?.dispose();
-    super.dispose();
   }
 }

@@ -21,6 +21,13 @@ dependencies:
   cached_network_image: ^3.0.0
   firebase_core : ^1.2.0
   cloud_firestore: ^2.2.0
+  nb_utils: ^4.6.16
+  google_fonts: ^3.0.1
+  dependencies:
+  provider: ^6.0.3
+  animated_text_kit: ^4.2.2
+  sizer: ^2.0.15
+  convex_bottom_bar: ^3.0.0
 
 dev_dependencies:
   flutter_test:
@@ -36,6 +43,8 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  assets:
+    - images/
 
   fonts:
     - family:  TikTokIcons

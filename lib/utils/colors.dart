@@ -7,3 +7,4 @@ const appThemeColor = Colors.red;
 const appButtonColor = Colors.red;
 const appBarBackgrounColor = Colors.white;
 const appLogoTextColor = Colors.white;
+const appTitleTextColor = Colors.black;

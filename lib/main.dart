@@ -1,17 +1,15 @@
-import 'package:convex_bottom_bar/convex_bottom_bar.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:persistent_bottom_nav_bar/persistent-tab-view.dart';
 import 'package:tafi/screens/custom_screen/custom_screen.dart';
 import 'package:tafi/screens/home_screen/home_screen.dart';
 import 'package:tafi/screens/message/messages_screen.dart';
 import 'package:tafi/screens/profile/profile_screen.dart';
 import 'package:tafi/screens/search/search_screen.dart';
 import 'package:tafi/service_locator.dart';
-import 'package:tafi/utils/tik_tok_icons_icons.dart';
+import 'package:tafi/utils/colors.dart';
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+void main() {
   setup();
   runApp(MaterialApp(
     debugShowCheckedModeBanner: false,
@@ -19,7 +17,7 @@ Future<void> main() async {
   ));
 }
 
-Color? selectedIconColor = Colors.red;
+// Color? selectedIconColor = Colors.red;
 
 class MainScreen extends StatefulWidget {
   MainScreen({Key? key}) : super(key: key);
@@ -29,46 +27,64 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  static const double CreateButtonWidth = 38.0;
 
   //final navigationKey = GlobalKey<CurvedNavigationBarState>();
   bool onPressed = false;
   int index = 0;
   final screens = [
-    CustomScreen(),
-    SearchScreen(),
     HomeScreen(),
+    SearchScreen(),
+    CustomScreen(),
     MessagesScreen(),
     ProfileScreen(),
+  ];
+  List<PersistentBottomNavBarItem> _navBarsItems = [
+    PersistentBottomNavBarItem(
+      icon: Icon(Icons.home_outlined),
+      title: ("Home"),
+      activeColorPrimary: appThemeColor,
+      inactiveColorPrimary: Colors.white38,
+    ),
+    PersistentBottomNavBarItem(
+      icon: Icon(Icons.search),
+      title: ("Search"),
+      activeColorPrimary: appThemeColor,
+      inactiveColorPrimary: Colors.white38,
+    ),
+    PersistentBottomNavBarItem(
+      icon: Icon(Icons.camera_alt_outlined),
+      title: ("Tafi"),
+      activeColorPrimary: appThemeColor,
+      inactiveColorPrimary: Colors.white38,
+    ),
+    PersistentBottomNavBarItem(
+      icon: Icon(Icons.message_outlined),
+      title: ("Message"),
+      activeColorPrimary: appThemeColor,
+      inactiveColorPrimary: Colors.white38,
+    ),
+    PersistentBottomNavBarItem(
+      icon: Icon(Icons.person_outline),
+      title: ("Account"),
+      activeColorPrimary: appThemeColor,
+      inactiveColorPrimary: Colors.white38,
+    ),
   ];
 
   Widget build(BuildContext context) {
     return Scaffold(
-        extendBody: true,
+        //backgroundColor: Colors.white,
+        // extendBody: true,
         body: screens[index],
-        bottomNavigationBar: ConvexAppBar(
-            color: Colors.black,
-            backgroundColor: Colors.white,
-            activeColor: Colors.red.shade200,
-            initialActiveIndex: 2,
-            items: [
-              TabItem(icon: Icon(Icons.camera_alt_outlined), title: 'Tafi'),
-              TabItem(
-                  icon: Icon(TikTokIcons.search, size: 20), title: 'Search'),
-              TabItem(
-                icon: Icon(TikTokIcons.home, size: 20),
-                title: 'Home',
-              ),
-              TabItem(
-                  icon: Icon(TikTokIcons.messages, size: 20), title: 'Message'),
-              TabItem(
-                  icon: Icon(TikTokIcons.profile, size: 20), title: 'Profile'),
-            ],
-            top: -20,
-            onTap: (index) => setState(
-                  () {
-                    this.index = index;
-                  },
-                )));
+        bottomNavigationBar: PersistentTabView(
+          context,
+          backgroundColor: Colors.transparent,
+          itemAnimationProperties:
+              ItemAnimationProperties(duration: Duration(milliseconds: 500)),
+          navBarHeight: 60,
+          navBarStyle: NavBarStyle.style9,
+          screens: screens,
+          items: _navBarsItems,
+        ));
   }
 }

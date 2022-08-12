@@ -1,12 +1,10 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:tafi/Colors.dart';
 import 'package:tafi/global_component.dart';
 import 'package:tafi/screens/feed_screen.dart';
-import 'package:tafi/screens/feed_viewmodel.dart';
-import 'package:tafi/screens/authentication/login_screen.dart';
-import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:tafi/utils/colors.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -62,32 +60,30 @@ class _SplashScreenState extends State<SplashScreen> {
             Image.asset("images/tafi1.png"),
             Row(mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-              Text("Powered by ",style:GoogleFonts.aBeeZee(fontSize:9) ),
-              DefaultTextStyle(
-                style: GoogleFonts.abel(color: Colors.green,fontSize: 15),
+                  Text("Powered by ",style:GoogleFonts.aBeeZee(fontSize:9) ),
+                  DefaultTextStyle(
+                    style: GoogleFonts.abel(color: Colors.green,fontSize: 15),
 
-                child: AnimatedTextKit(
-                  animatedTexts: [
-                    WavyAnimatedText('Ficuslot Team',),
-                  ],
-                  isRepeatingAnimation: true,
-                  onTap: () {
-                    print("Tap Event");
-                  },
-                ),
-              )
-            ]).paddingTop(120)
+                    child: AnimatedTextKit(
+                      animatedTexts: [
+                        WavyAnimatedText('Ficuslot Team',),
+                      ],
+                      isRepeatingAnimation: true,
+                      onTap: () {
+                        print("Tap Event");
+                      },
+                    ),
+                  )
+                ]).paddingTop(120)
           ],
         ),
       ),
     );
   }
 
-  showLogo(
-    int time,
-    String text,
-    Color bgColor,
-  ) {
+  showLogo(int time,
+      String text,
+      Color bgColor,) {
     return TweenAnimationBuilder(
         curve: Curves.bounceOut,
         tween: Tween<double>(begin: 0, end: 1),

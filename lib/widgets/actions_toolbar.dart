@@ -1,7 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:tafi/utils/tik_tok_icons_icons.dart';
 import 'package:tafi/widgets/circle_image_animation.dart';
+import 'package:tafi/widgets/video_description.dart';
+import 'package:video_player/video_player.dart';
+
+import '../data/video.dart';
 
 class ActionsToolbar extends StatelessWidget {
   // Full dimensions of an action
@@ -144,5 +149,115 @@ class ActionsToolbar extends StatelessWidget {
                     errorWidget: (context, url, error) => new Icon(Icons.error),
                   ))),
         ]));
+  }
+}
+
+
+class VideoItem extends StatefulWidget {
+  final VideoPlayerController videoPlayerController;
+  final bool looping;
+
+  VideoItem({
+    required this.videoPlayerController,
+     required this.looping,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  _VideoItemState createState() => _VideoItemState();
+}
+
+class _VideoItemState extends State<VideoItem> {
+  late ChewieController _chewieController;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _chewieController = ChewieController(
+
+      isLive: true,
+      allowPlaybackSpeedChanging: false,
+      autoPlay: true,
+      allowMuting: false,
+      videoPlayerController: widget.videoPlayerController,
+      aspectRatio:5/8,
+      showControls: false,
+      autoInitialize: true,
+      looping: widget.looping,
+
+      errorBuilder: (context, errorMessage) {
+        return Center(
+          child: Text(
+            errorMessage,
+            style: TextStyle(color: Colors.white),
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Chewie(
+        controller: _chewieController,
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+
+    widget.videoPlayerController.dispose();
+    _chewieController.dispose();
+  }
+  Widget videoCard(Video video) {
+    return Stack(
+      children: [
+        video.controller != null
+            ? GestureDetector(
+          onTap: () {
+            if (video.controller!.value.isPlaying) {
+              video.controller?.pause();
+            } else {
+              video.controller?.play();
+            }
+          },
+          child: SizedBox.expand(
+              child: FittedBox(
+                fit: BoxFit.cover,
+                child: SizedBox(
+                  width: video.controller?.value.size.width ?? 0,
+                  height: video.controller?.value.size.height ?? 0,
+                  child: VideoPlayer(video.controller!),
+                ),
+              )),
+        )
+            : Container(
+          color: Colors.black,
+          child: Center(
+            child: Text("Loading"),
+          ),
+        ),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            Row(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: <Widget>[
+                VideoDescription(video.user, video.videoTitle, video.songName),
+                ActionsToolbar(video.likes, video.comments,
+                    "https://www.andersonsobelcosmetic.com/wp-content/uploads/2018/09/chin-implant-vs-fillers-best-for-improving-profile-bellevue-washington-chin-surgery.jpg"),
+              ],
+            ),
+            SizedBox(height: 20)
+          ],
+        ),
+      ],
+    );
   }
 }

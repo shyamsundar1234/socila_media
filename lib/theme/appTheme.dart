@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:tafi/Colors.dart';
+import 'package:tafi/utils/colors.dart';
+
 
 ThemeData appTheme() => ThemeData(
     appBarTheme: appBarTheme(),

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class VideoDescription extends StatelessWidget {
-  final username;
-  final videtoTitle;
-  final songInfo;
+  final String username;
+  final String videtoTitle;
+  final String songInfo;
 
   VideoDescription(this.username, this.videtoTitle, this.songInfo);
 

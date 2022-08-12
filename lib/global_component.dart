@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:nb_utils/nb_utils.dart';
-import 'package:tafi/Colors.dart';
-import 'package:tafi/screens/home_screen/home_screen.dart';
-  BuildContext context = context;
+import 'package:tafi/utils/colors.dart';
+
+BuildContext context = context;
 double screenWidth = MediaQuery.of(context).size.width;
 double screenHeight = MediaQuery.of(context).size.height;
 
@@ -72,12 +72,12 @@ editTextFormField(String labelText,
       maxLines: maxL,
       focusNode: FocusNode(),
       style: GoogleFonts.aBeeZee(fontSize: 13),
-      cursorColor: appThemeColor,
+      cursorColor: Colors.yellowAccent,
       keyboardType: keyBoardType ?? TextInputType.text,
       enabled: isEnabled ?? true,
       validator: validator,
       controller: controller,
-      maxLength: maxLength ?? 200,
+      maxLength: maxLength ?? 20,
       autovalidateMode: validationMode,
       decoration: InputDecoration(
         counterText: counterText ?? "",
@@ -88,4 +88,40 @@ editTextFormField(String labelText,
       ),
     ),
   );
+}
+
+appBarView(String title) {
+  return AppBar(
+    title: Text(title),
+  );
+}
+
+editProfileTextFormField({
+  double? sHeight,
+  double? sWidth,
+  String? labelText,
+  TextInputType? keyBoardType,
+  bool? isEnabled,
+  String? Function(String?)? validator,
+  TextEditingController? controller,
+  int? maxLength,
+  String? counterText,
+  String? hintText,
+  IconData? suffixIcon,
+  AutovalidateMode? validationMode,
+  IconData? prefixIcon,
+  int? maxL,
+  String? prefixText,
+  String? Function(String?)? onChange,
+  String? Function(String?)? onSave,
+}) {
+  return SizedBox(
+      height: sHeight ?? 80,
+      width: sWidth ?? 350,
+      child: TextFormField(
+        decoration: InputDecoration(
+            labelText: labelText,
+            labelStyle: GoogleFonts.aBeeZee(fontSize: 13)),
+        showCursor: true,
+      ));
 }

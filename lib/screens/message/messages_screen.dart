@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nb_utils/nb_utils.dart';
 import 'package:tafi/utils/tik_tok_icons_icons.dart';
 
 class MessagesScreen extends StatefulWidget {
@@ -15,6 +16,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
       child: Container(
         color: Colors.white,
         child: Column(children: [
+          24.height,
           Container(
             decoration: BoxDecoration(
                 border: Border(bottom: BorderSide(color: Colors.black12))),

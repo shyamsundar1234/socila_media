@@ -466,35 +466,35 @@ class _FeedScreenState extends State<FeedScreen> {
             return videoCard(feedViewModel.videoSource!.listVideos[index]);
           },
         ),
-        SafeArea(
-          child: Container(
-            padding: EdgeInsets.only(top: 20),
-            child: DefaultTabController(
-              length: 2,
-              child: TabBar(
-                tabs: [
-                  Tab(
-                    child: Text(
-                      'Following',
-                      style: TextStyle(color: Colors.white, fontSize: 18),
-                    ),
-                  ),
-                  Tab(
-                    child: Text(
-                      'For You',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                      ),
-                    ),
-                  ),
-                ],
-                indicatorColor: Colors.red,
-                indicatorSize: TabBarIndicatorSize.label,
-              ),
-            ),
-          ),
-        )
+        // SafeArea(
+        //   child: Container(
+        //     padding: EdgeInsets.only(top: 20),
+        //     child: DefaultTabController(
+        //       length: 2,
+        //       child: TabBar(
+        //         tabs: [
+        //           Tab(
+        //             child: Text(
+        //               'Following',
+        //               style: TextStyle(color: Colors.white, fontSize: 18),
+        //             ),
+        //           ),
+        //           Tab(
+        //             child: Text(
+        //               'For You',
+        //               style: TextStyle(
+        //                 color: Colors.white,
+        //                 fontSize: 18,
+        //               ),
+        //             ),
+        //           ),
+        //         ],
+        //         indicatorColor: Colors.red,
+        //         indicatorSize: TabBarIndicatorSize.label,
+        //       ),
+        //     ),
+        //   ),
+        // )
       ],
     );
   }
